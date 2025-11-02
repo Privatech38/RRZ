@@ -2,7 +2,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-ime_slike = './vaja-1/RRZ_vaja1_material/bird.jpg'
+ime_slike = 'RRZ_vaja1_material/bird.jpg'
 im = cv2.imread(ime_slike)
 im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
 
