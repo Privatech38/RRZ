@@ -1,0 +1,11 @@
+[project]
+requires-python = "3.12"
+dependencies = [
+    "numpy<2.3.0",
+    "opencv-python==4.12.0.88",
+    "matplotlib==3.10.7"
+]
+
+authors = [{ name = "Žiga Slatnar Štagar", email = "contact@privatech.dev" }]
+license = "MIT"
+description = "Project for RRZ class"
