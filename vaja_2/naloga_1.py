@@ -1,3 +1,7 @@
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+
 # a)
 f = [0, 1, 1, 1, 0, 0.7, 0.5, 0.2, 0, 0, 1, 0]
 k = [0.5, 1, 0.3]
@@ -5,13 +9,10 @@ k = [0.5, 1, 0.3]
 result = [1.3, 1.8, 1.5, 0.71, 0.85, 0.91, 0.45, 0.1, 0.3, 1]
 
 # b)
-import numpy as np
-import matplotlib.pyplot as plt
-
 def simple_convolution(I, g):
     I = np.array(I)
     g = np.array(g)
-    return np.array([np.dot(I[i:i+g.size], g) for i in range(0, I.size - g.size)])
+    return np.array([np.dot(I[i:i+g.size], g) for i in range(0, I.size - g.size + 1)])
 
 signal = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0, 0.0,
           0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 5.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0,
@@ -25,19 +26,62 @@ rezultat = simple_convolution(signal, kernel)
 N = (len(kernel) - 1) // 2
 
 plt.figure()
+plt.title('simple_convolution()')
 plt.stairs(signal)
 plt.stairs(kernel, edges=np.arange(N, len(kernel) + N + 1))
 plt.stairs(rezultat, edges=np.arange(N, len(rezultat) + N + 1))
 plt.show()
-
-print(f'Moj rezultat: {rezultat}')
 
 # c)
-rezultat = np.convolve(rezultat, kernel)
+rezultat = np.convolve(signal, kernel, mode='valid')
 plt.figure()
+plt.title('np.convolve()')
 plt.stairs(signal)
 plt.stairs(kernel, edges=np.arange(N, len(kernel) + N + 1))
 plt.stairs(rezultat, edges=np.arange(N, len(rezultat) + N + 1))
 plt.show()
 
-print(f'Np rezultat: {result}')
+# d)
+def simple_gauss(sigma):
+    absolute_sigma = 3 * abs(math.ceil(sigma))
+    gauss_kernel = np.arange(-absolute_sigma, absolute_sigma + 1)
+    gauss_kernel = (1 / (sigma * math.sqrt(2 * math.pi))) * np.exp(-(gauss_kernel**2) / (2 * sigma**2))
+    kernel_sum = np.sum(gauss_kernel)
+    gauss_kernel /= kernel_sum
+    return gauss_kernel
+
+# e)
+gauss_kernel = simple_gauss(2)
+
+plt.figure()
+plt.subplot(1, 2, 1)
+plt.title('Podano jedro')
+plt.plot(kernel)
+plt.subplot(1, 2, 2)
+plt.title('simple_gauss')
+plt.plot(gauss_kernel)
+plt.show()
+
+plt.figure()
+plt.plot(simple_gauss(0.5))
+plt.plot(simple_gauss(1))
+plt.plot(gauss_kernel)
+plt.plot(simple_gauss(3))
+plt.plot(simple_gauss(4))
+plt.show()
+
+# f)
+plt.figure()
+plt.imshow(plt.imread("konvolucija.png"))
+plt.show()
+
+# g)
+kernel_2 = [0.1, 0.6, 0.4]
+plt.figure()
+plt.subplot(1, 3, 1)
+plt.plot(simple_convolution(simple_convolution(signal, gauss_kernel), kernel_2))
+plt.subplot(1, 3, 2)
+plt.plot(simple_convolution(simple_convolution(signal, kernel_2), gauss_kernel))
+plt.subplot(1, 3, 3)
+plt.plot(simple_convolution(signal, simple_convolution(gauss_kernel, kernel_2)))
+plt.show()
