@@ -106,13 +106,38 @@ def gauss_filter(img, sigma=1):
     plt.subplot(1, 3, 1)
     plt.title("Original")
     plt.imshow(img, cmap="gray")
+    plt.axis('off')
     plt.subplot(1, 3, 2)
     plt.title("Filtracija 1D")
     plt.imshow(dst_1d, cmap="gray")
+    plt.axis('off')
     plt.subplot(1, 3, 3)
     plt.title("Filtracija 2D")
     plt.imshow(dst_2d, cmap="gray")
+    plt.axis('off')
     plt.show()
 
 gauss_filter(cv2.imread("images/lena_gauss.png", cv2.IMREAD_GRAYSCALE))
 gauss_filter(cv2.imread("images/lena_sp.png", cv2.IMREAD_GRAYSCALE))
+
+# i)
+SHARPEN_KERNEL = np.array([[0, 0, 0], [0, 2, 0], [0, 0, 0]]) - (1.0 / 9.9) * np.ones((3, 3))
+def sharpen_filter(img):
+    dst = np.zeros_like(img)
+    cv2.filter2D(img, -1, SHARPEN_KERNEL, dst=dst)
+    return dst
+
+img_sharpen = cv2.imread("images/fox.jpg", cv2.IMREAD_COLOR_RGB)
+plt.figure()
+plt.subplot(2, 2, 1)
+plt.imshow(img_sharpen)
+plt.title("Original")
+plt.axis('off')
+for i in range(1, 4):
+    plt.subplot(2, 2, i + 1)
+    img_sharpen = sharpen_filter(img_sharpen)
+    plt.imshow(img_sharpen)
+    plt.title(f"Sharpen {i}x")
+    plt.axis('off')
+
+plt.show()
