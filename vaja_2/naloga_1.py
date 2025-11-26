@@ -1,4 +1,6 @@
 import math
+
+import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -85,3 +87,32 @@ plt.plot(simple_convolution(simple_convolution(signal, kernel_2), gauss_kernel))
 plt.subplot(1, 3, 3)
 plt.plot(simple_convolution(signal, simple_convolution(gauss_kernel, kernel_2)))
 plt.show()
+
+# h)
+def gauss_filter(img, sigma=1):
+    filter_kernel = simple_gauss(sigma)
+    # 1D
+    dst_1d = np.zeros_like(img)
+    cv2.filter2D(img, -1, filter_kernel, dst=dst_1d)
+    column_filter = np.expand_dims(filter_kernel, axis=1)
+    cv2.filter2D(dst_1d, -1, column_filter, dst=dst_1d)
+
+    # 2D
+    dst_2d = np.zeros_like(img)
+    k_2d = filter_kernel @ column_filter
+    cv2.filter2D(img, -1, k_2d, dst=dst_2d)
+
+    plt.figure()
+    plt.subplot(1, 3, 1)
+    plt.title("Original")
+    plt.imshow(img, cmap="gray")
+    plt.subplot(1, 3, 2)
+    plt.title("Filtracija 1D")
+    plt.imshow(dst_1d, cmap="gray")
+    plt.subplot(1, 3, 3)
+    plt.title("Filtracija 2D")
+    plt.imshow(dst_2d, cmap="gray")
+    plt.show()
+
+gauss_filter(cv2.imread("images/lena_gauss.png", cv2.IMREAD_GRAYSCALE))
+gauss_filter(cv2.imread("images/lena_sp.png", cv2.IMREAD_GRAYSCALE))
