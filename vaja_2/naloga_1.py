@@ -101,7 +101,10 @@ def gauss_filter(img, sigma=1):
     dst_2d = np.zeros_like(img)
     k_2d = filter_kernel @ column_filter
     cv2.filter2D(img, -1, k_2d, dst=dst_2d)
+    return dst_1d, dst_2d
 
+def compare_gauss(img, sigma=1):
+    filtered_images = gauss_filter(img, sigma)
     plt.figure()
     plt.subplot(1, 3, 1)
     plt.title("Original")
@@ -109,16 +112,16 @@ def gauss_filter(img, sigma=1):
     plt.axis('off')
     plt.subplot(1, 3, 2)
     plt.title("Filtracija 1D")
-    plt.imshow(dst_1d, cmap="gray")
+    plt.imshow(filtered_images[0], cmap="gray")
     plt.axis('off')
     plt.subplot(1, 3, 3)
     plt.title("Filtracija 2D")
-    plt.imshow(dst_2d, cmap="gray")
+    plt.imshow(filtered_images[1], cmap="gray")
     plt.axis('off')
     plt.show()
 
-gauss_filter(cv2.imread("images/lena_gauss.png", cv2.IMREAD_GRAYSCALE))
-gauss_filter(cv2.imread("images/lena_sp.png", cv2.IMREAD_GRAYSCALE))
+compare_gauss(cv2.imread("images/lena_gauss.png", cv2.IMREAD_GRAYSCALE))
+compare_gauss(cv2.imread("images/lena_sp.png", cv2.IMREAD_GRAYSCALE))
 
 # i)
 SHARPEN_KERNEL = np.array([[0, 0, 0], [0, 2, 0], [0, 0, 0]]) - (1.0 / 9.9) * np.ones((3, 3))
@@ -161,3 +164,36 @@ plt.plot(np.pad(median_filter(x, sigma=3), 3, mode='edge'), label='Median')
 plt.legend()
 plt.show()
 
+# k)
+def median_filter_2D(I, sigma=2):
+    window_size = sigma * 2 + 1
+    center = window_size // 2
+    J = np.zeros_like(I)
+    I = np.pad(I, sigma, mode='edge')
+    for i in range(J.shape[0]):
+        for j in range(J.shape[1]):
+            J[i, j] = np.sort(I[i:i + window_size, j:j + window_size])[center, center]
+    return J
+
+def compare_median_filter(img, sigma=2):
+    plt.figure()
+    plt.subplot(1, 3, 1)
+    plt.title("Original")
+    plt.imshow(img, cmap="gray")
+    plt.axis('off')
+    plt.subplot(1, 3, 2)
+    plt.title("Filtracija Gauss")
+    plt.imshow(gauss_filter(img, sigma)[0], cmap="gray")
+    plt.axis('off')
+    plt.subplot(1, 3, 3)
+    plt.title("Filtracija Median")
+    plt.imshow(median_filter_2D(img, sigma), cmap="gray")
+    plt.axis('off')
+    plt.show()
+
+compare_median_filter(cv2.imread("images/lena_gauss.png", cv2.IMREAD_GRAYSCALE), 2)
+compare_median_filter(cv2.imread("images/lena_sp.png", cv2.IMREAD_GRAYSCALE), 4)
+
+# Če se definiramo sliko kot N x M in k = sigma je časovovna zahtevnost:
+# - Gaussovega filtra = O(N * M * k^2)
+# - Filtra z mediano = O(N * M * k^2 * log(k^2)
