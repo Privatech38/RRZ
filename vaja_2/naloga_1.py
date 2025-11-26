@@ -141,3 +141,23 @@ for i in range(1, 4):
     plt.axis('off')
 
 plt.show()
+
+# j)
+x = np.concatenate((np.zeros(14), np.ones(11), np.zeros(15)))
+# pokvarjeni signal
+xc = np.copy(x)
+xc[11] = 5
+xc[18] = 5
+
+def median_filter(I, sigma=2):
+    window_size = sigma * 2 + 1
+    center = window_size // 2
+    return np.array([sorted(I[i:i + window_size])[center] for i in range(I.size - window_size + 1)])
+
+plt.figure()
+plt.plot(xc, label="Original")
+plt.plot(np.pad(simple_convolution(x, simple_gauss(2)), 2, mode='edge'), label='Gauss')
+plt.plot(np.pad(median_filter(x, sigma=3), 3, mode='edge'), label='Median')
+plt.legend()
+plt.show()
+
