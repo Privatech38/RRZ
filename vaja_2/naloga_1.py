@@ -99,7 +99,7 @@ def gauss_filter(img, sigma=1):
 
     # 2D
     dst_2d = np.zeros_like(img)
-    k_2d = filter_kernel @ column_filter
+    k_2d = np.outer(filter_kernel, filter_kernel)
     cv2.filter2D(img, -1, k_2d, dst=dst_2d)
     return dst_1d, dst_2d
 
@@ -183,7 +183,7 @@ def compare_median_filter(img, sigma=2):
     plt.axis('off')
     plt.subplot(1, 3, 2)
     plt.title("Filtracija Gauss")
-    plt.imshow(gauss_filter(img, sigma)[0], cmap="gray")
+    plt.imshow(gauss_filter(img, sigma)[1], cmap="gray")
     plt.axis('off')
     plt.subplot(1, 3, 3)
     plt.title("Filtracija Median")
