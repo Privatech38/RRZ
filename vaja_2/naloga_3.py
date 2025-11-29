@@ -60,4 +60,5 @@ def show_edges(maps):
     plt.show()
 
 img = cv2.imread("images/museum.jpg", cv2.IMREAD_GRAYSCALE)
+img = np.float32(img)
 show_edges(gradient_magnitude(img))
