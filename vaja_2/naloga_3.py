@@ -93,3 +93,23 @@ while capture.isOpened():
 
 capture.release()
 cv2.destroyAllWindows()
+
+# d)
+capture = cv2.VideoCapture('tf2_clip.mp4')
+
+while capture.isOpened():
+    ret, frame = capture.read()
+    if not ret:
+        break
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray = np.float32(gray)
+    gray = cv2.GaussianBlur(gray, (3, 3), 0.7)
+    corners = cv2.cornerHarris(gray, 2,3,0.02)
+    corners = cv2.dilate(corners, None)
+    frame[corners > 0.01 * corners.max()] = [0, 0, 255]
+    cv2.imshow("Corners", frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+capture.release()
+cv2.destroyAllWindows()
