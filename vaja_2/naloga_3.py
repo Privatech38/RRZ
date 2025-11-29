@@ -24,9 +24,6 @@ def gradient_magnitude(I):
     gauss_kernel =  np.expand_dims(simple_gauss(3), 0)
     gaussdx_kernel = np.expand_dims(simple_gaussdx(3), 0)
 
-    print(gauss_kernel)
-    print(gaussdx_kernel)
-
     I_x = np.zeros_like(I)
     cv2.filter2D(I, -1, gauss_kernel.T, I_x)
     cv2.filter2D(I_x, -1, gaussdx_kernel, I_x)
@@ -61,4 +58,38 @@ def show_edges(maps):
 
 img = cv2.imread("images/museum.jpg", cv2.IMREAD_GRAYSCALE)
 img = np.float32(img)
-show_edges(gradient_magnitude(img))
+magnitudes = gradient_magnitude(img)
+show_edges(magnitudes)
+
+# b)
+def edges_simple(I_mag, threshold):
+    return I_mag > threshold
+
+plt.figure()
+thresholds = np.linspace(0.2, 0.7, 6)
+I_mag = np.copy(magnitudes[3])
+I_mag /= np.max(I_mag)
+for i in range(6):
+    plt.subplot(2, 3, i + 1)
+    treshold = thresholds[i]
+    plt.title(f"t = {treshold}")
+    plt.imshow(edges_simple(I_mag, treshold), cmap='gray')
+    plt.axis('off')
+plt.show()
+
+# c)
+capture = cv2.VideoCapture('tf2_clip.mp4')
+
+while capture.isOpened():
+    ret, frame = capture.read()
+    if not ret:
+        break
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (5, 5), 1)
+    edges = cv2.Canny(gray, 60, 120)
+    cv2.imshow("frame", edges)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+capture.release()
+cv2.destroyAllWindows()
