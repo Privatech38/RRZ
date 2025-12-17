@@ -4,7 +4,6 @@ from utils import dh_transform, show_coordinate_system
 from math import pi
 import matplotlib.pyplot as plt
 
-
 # a)
 #
 #   d_i theta_i a_i alpha_i
@@ -20,9 +19,14 @@ def stanford_manipulator(parameters: List[float]) -> np.ndarray:
                          dh_transform(0, np.pi/2, L2, parameters[1]),
                          dh_transform(0, 0, L3 + parameters[2], 0)])
 
-    # return np.multiply.accumulate(matrices)
-    M = np.eye(4)
-    return [m@M for m in matrices]
+    current_matrix = np.eye(4)
+    results = []
+
+    for m in matrices:
+        current_matrix = current_matrix@m
+        results.append(current_matrix)
+
+    return np.array(results)
 
 
 # print(stanford_manipulator([0.2, 0.4, 0.4]))
@@ -37,16 +41,23 @@ def antropomorphic_manipulator(parameters: List[float]) -> np.ndarray:
         dh_transform(length, 0, 0, parameters[2]),
     ])
 
-    return np.multiply.accumulate(parameters)
+    current_matrix = np.eye(4)
+    results = []
+
+    for m in matrices:
+        current_matrix = current_matrix@m
+        results.append(current_matrix)
+
+    return np.array(results)
 
 # d)
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
-manipulator = stanford_manipulator([0, 0, 1])
+manipulator = stanford_manipulator([pi/4, pi/4, 1])
 print(manipulator)
 for matrix in manipulator:
-    show_coordinate_system(ax, matrix)
-ax.set_xlim([0, 5])
-ax.set_ylim([0, 5])
-ax.set_zlim([0, 5])
+    show_coordinate_system(ax, matrix, scale=0.6)
+ax.set_xlim([-5, 5])
+ax.set_ylim([-5, 5])
+ax.set_zlim([0, 10])
 plt.show()
