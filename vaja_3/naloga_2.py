@@ -61,3 +61,15 @@ ax.set_xlim([-5, 5])
 ax.set_ylim([-5, 5])
 ax.set_zlim([0, 10])
 plt.show()
+
+# Antropomorfni
+fig = plt.figure()
+ax = fig.add_subplot(projection='3d')
+manipulator = antropomorphic_manipulator([pi/4, pi/4, -pi/4])
+print(manipulator)
+for matrix in manipulator:
+    show_coordinate_system(ax, matrix, scale=0.6)
+ax.set_xlim([-5, 5])
+ax.set_ylim([-5, 5])
+ax.set_zlim([0, 10])
+plt.show()
