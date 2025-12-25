@@ -5,18 +5,21 @@ import ikpy.utils.plot as plot_utils
 from mpl_toolkits.mplot3d import Axes3D
 from naloga_2 import stanford_manipulator, antropomorphic_manipulator
 
+def plot(matrices: np.ndarray, ax: Axes3D):
+    """
+    Plot the DH parameter intermediate matrices.
+    :param matrices: DH parameter intermediate matrices
+    :param ax: 3D axes to draw on
+    """
+    matrices = np.insert(matrices, 0, np.eye(4), axis=0)
+    points = np.array([T[:3, 3] for T in matrices])
+    x, y, z = points[:, 0], points[:, 1], points[:, 2]
+    ax.scatter(x, y, z, c="r", marker=".", label="Joints")
+    ax.plot(x, y, z, c="b", label="Joint connections")
 
 def stanford_sliders():
 
     radius = 5
-
-    def plot(coeffs: list[float], ax: Axes3D):
-        matrices = stanford_manipulator(coeffs)
-        matrices = np.insert(matrices, 0, np.eye(4), axis=0)
-        points = np.array([T[:3, 3] for T in matrices])
-        x, y, z = points[:, 0], points[:, 1], points[:, 2]
-        ax.scatter(x, y, z, c="r", marker=".", label="Joints")
-        ax.plot(x, y, z, c="b", label="Joint connections")
 
     # Initial parameter values
     initial_coeffs = [0.0, 0.0, 0.0]
@@ -76,7 +79,7 @@ def stanford_sliders():
     ax.set_ylabel("y")
     ax.set_title("Stanford")
 
-    plot(initial_coeffs, ax)
+    plot(stanford_manipulator(initial_coeffs), ax)
 
 
     def update(val):
@@ -92,7 +95,7 @@ def stanford_sliders():
         ax.clear()
 
         # Update the plot
-        plot(coeffs, ax)
+        plot(stanford_manipulator(coeffs), ax)
         ax.set_xlim(-radius, radius)
         ax.set_ylim(-radius, radius)
         ax.set_zlim(0, 2*radius)
@@ -108,14 +111,6 @@ def stanford_sliders():
 
 def antropomorphic_sliders():
     radius = 5
-
-    def plot(coeffs: list[float], ax: Axes3D):
-        matrices = antropomorphic_manipulator(coeffs)
-        matrices = np.insert(matrices, 0, np.eye(4), axis=0)
-        points = np.array([T[:3, 3] for T in matrices])
-        x, y, z = points[:, 0], points[:, 1], points[:, 2]
-        ax.scatter(x, y, z, c="r", marker=".", label="Joints")
-        ax.plot(x, y, z, c="b", label="Joint connections")
 
     # Initial parameter values
     initial_coeffs = [0.0, 0.0, 0.0]
@@ -175,7 +170,7 @@ def antropomorphic_sliders():
     ax.set_ylabel("y")
     ax.set_title("Antropomorphic")
 
-    plot(initial_coeffs, ax)
+    plot(antropomorphic_manipulator(initial_coeffs), ax)
 
 
     def update(val):
@@ -187,7 +182,7 @@ def antropomorphic_sliders():
         ax.clear()
 
         # Update the plot
-        plot(coeffs, ax)
+        plot(antropomorphic_manipulator(coeffs), ax)
         ax.set_xlim(-radius, radius)
         ax.set_ylim(-radius, radius)
         ax.set_zlim(0, 2*radius)
