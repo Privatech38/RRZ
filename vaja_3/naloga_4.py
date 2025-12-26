@@ -122,6 +122,7 @@ def show_animated(path: np.ndarray, params: np.ndarray, dh_params: List[dict]):
             plt.draw()
             plt.pause(0.05)
 
+# d)
 def ik_ccd(target_pos, q0, dh_params, max_iter=20):
 
     end_effector, inter_matrices = end_effector_pos(q0, dh_params)
@@ -170,6 +171,14 @@ def ik_ccd(target_pos, q0, dh_params, max_iter=20):
                     if current_distance > min_distance:
                         break
 
+                matrices[j] = dh_transform(
+                    p["a"],
+                    p["alpha"],
+                    p["d"],
+                    p["theta_offset"] + q_i[j]
+                )
+                update_inter_matrices(j)
+
                 for value in np.arange(0, pi, 0.05, dtype=float):
                     matrices[j] = dh_transform(
                         p["a"],
@@ -183,6 +192,14 @@ def ik_ccd(target_pos, q0, dh_params, max_iter=20):
                         min_distance = current_distance
                     if current_distance > min_distance:
                         break
+
+                matrices[j] = dh_transform(
+                    p["a"],
+                    p["alpha"],
+                    p["d"],
+                    p["theta_offset"] + q_i[j]
+                )
+                update_inter_matrices(j)
             elif joint_type == "l":
                 for value in np.arange(0, 10, 0.1, dtype=float):
                     matrices[j] = dh_transform(
@@ -197,6 +214,14 @@ def ik_ccd(target_pos, q0, dh_params, max_iter=20):
                         min_distance = current_distance
                     if current_distance > min_distance:
                         break
+
+                matrices[j] = dh_transform(
+                    p["a"],
+                    p["alpha"],
+                    p["d_offset"] + q_i[j],
+                    p["theta_offset"]
+                )
+                update_inter_matrices(j)
         q = q_i
     return q
 
@@ -208,11 +233,9 @@ if __name__ == "__main__":
     offset = np.array([6, 0, 2])
     points *= 2
     points += offset
-    # show_animated(points, calculate_params(points, stanford_dh_params, [0.0, 0.0, 0.0]), stanford_dh_params)
-    # show_animated(points, calculate_params(points, stanford_dh_params, [0.0, 0.0, 0.0], fixed=True), stanford_dh_params)
-    # show_animated(points, calculate_params(points, antropomorphic_dh_params, [0.0, 0.0, 0.0]), antropomorphic_dh_params)
-    # show_animated(points, calculate_params(points, antropomorphic_dh_params, [0.0, 0.0, 0.0], fixed=True), antropomorphic_dh_params)
+    show_animated(points, calculate_params(points, stanford_dh_params, [0.0, 0.0, 0.0]), stanford_dh_params)
+    show_animated(points, calculate_params(points, stanford_dh_params, [0.0, 0.0, 0.0], fixed=True), stanford_dh_params)
+    show_animated(points, calculate_params(points, antropomorphic_dh_params, [0.0, 0.0, 0.0]), antropomorphic_dh_params)
+    show_animated(points, calculate_params(points, antropomorphic_dh_params, [0.0, 0.0, 0.0], fixed=True), antropomorphic_dh_params)
     # d)
-    ccd = calculate_params_ccd(points, antropomorphic_dh_params, [0.0, 0.0, 0.0])
-    print(ccd)
-    show_animated(points, ccd, antropomorphic_dh_params)
+    show_animated(points, calculate_params_ccd(points, antropomorphic_dh_params, [0.0, 0.0, 0.0]), antropomorphic_dh_params)
