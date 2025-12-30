@@ -177,8 +177,8 @@ if __name__ == "__main__":
     pts = generate_triangle(N=N_pts)
     offset = np.array([0.2, -0.05, 0.05])
     pts += offset
-    # IK_demo(my_chain, pts)
-    # IK_control(robot, my_chain, pts)
+    IK_demo(my_chain, pts)
+    IK_control(robot, my_chain, pts)
     move_cube(robot, my_chain, np.array([0.25, 0.115, 0.005]), np.array([0.20, 0.015, 0.005]))
     move_cube(robot, my_chain, np.array([0.275, -0.05, 0.005]), np.array([0.20, 0.015, 0.025]))
     move_cube(robot, my_chain, np.array([0.30, 0.04, 0.005]), np.array([0.20, 0.015, 0.045]))
