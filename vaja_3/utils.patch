@@ -1,6 +1,14 @@
---- utils.py	2025-12-26 20:15:26.250343300 +0100
-+++ utils.py	2025-12-30 19:06:25.614390500 +0100
-@@ -135,6 +135,16 @@
+--- utils.py	2025-12-30 19:11:42.747062400 +0100
++++ utils.py	2025-12-30 19:12:13.956008500 +0100
+@@ -3,6 +3,7 @@
+ import cv2
+ import numpy as np
+ import matplotlib.pyplot as plt
++import math
+ 
+ def show_coordinate_system(ax, M, scale=0.2):
+ 	
+@@ -135,6 +136,16 @@
  
  	return np.array(points)
  
