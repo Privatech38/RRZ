@@ -1,0 +1,27 @@
+--- utils.py	2025-12-30 19:11:42.747062400 +0100
++++ utils.py	2025-12-30 19:12:13.956008500 +0100
+@@ -3,6 +3,7 @@
+ import cv2
+ import numpy as np
+ import matplotlib.pyplot as plt
++import math
+ 
+ def show_coordinate_system(ax, M, scale=0.2):
+ 	
+@@ -135,6 +136,16 @@
+ 
+ 	return np.array(points)
+ 
++def generate_triangle(width=0.1,N=100, target_position=np.array([0.0, 0.0, 0.0])):
++
++	HEIGHT=math.sqrt(3)/2
++
++	p1=target_position
++	p2=target_position+[width/2, HEIGHT*width, 0]
++	p3=target_position+[width,0,0]
++
++	return np.vstack((np.linspace(p1,p2,N), np.linspace(p2,p3,N), np.linspace(p3,p1,N)))
++
+ def numeric_jacobian(q, dh_params, h=1e-6):
+ 	"""
+ 	Numerically estimate the Jacobian J = d p / d q for position only.
