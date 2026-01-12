@@ -47,7 +47,6 @@ if __name__ == "__main__":
     # Mask
     plt.subplot(233)
     workspace_mask = np.zeros(warped_workspace.shape[:2], dtype=np.uint8)
-    print(workspace_mask)
     cv2.rectangle(workspace_mask, manual_corners[0], manual_corners[3], 255, -1)
     plt.imshow(workspace_mask, cmap='gray')
     plt.title('maska delovne površine')
@@ -57,5 +56,12 @@ if __name__ == "__main__":
     plt.title('delovna površina')
     masked_workspace = cv2.bitwise_and(warped_workspace, warped_workspace, mask=workspace_mask)
     plt.imshow(masked_workspace)
+
+    # Converted to HSV
+    plt.subplot(235)
+    hsv_workspace = cv2.cvtColor(masked_workspace, cv2.COLOR_RGB2HSV)
+    tresholded_workspace = cv2.inRange(hsv_workspace, (172 // 2, 100, 1), (263 // 2, 255, 255))
+    plt.imshow(tresholded_workspace, cmap='gray')
+    plt.title('maska objektov')
     plt.show()
 
