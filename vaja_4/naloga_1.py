@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patheffects import SimpleLineShadow, Normal, Stroke
 
 # capture_f1.jpg koti
 top_left = np.array([331, 321])
@@ -31,7 +32,15 @@ if __name__ == "__main__":
     original_work_grid = (inverse_H@homogeneous_work_grid.T).T
     original_work_grid = original_work_grid[:, :2] / original_work_grid[:, [-1]]
 
+    corners = np.array([original_work_grid[0], original_work_grid[40], original_work_grid[-41], original_work_grid[-1]]).astype(np.int32)
+    work_corners = np.array([work_grid_points[0], work_grid_points[40], work_grid_points[-41], work_grid_points[-1]]).astype(np.int32)
+
     plt.subplot(1,2,1)
     plt.imshow(original)
     plt.scatter(original_work_grid[:, 0], original_work_grid[:, 1], c='b', marker='.', s=3)
+    plt.scatter(corners[:, 0], corners[:, 1], c='r', marker='.', s=5)
+    for i, (x, y) in enumerate(corners):
+        text = plt.text(x, y, f"({work_corners[i][0]}, {work_corners[i][1]})", fontsize=10, color='white')
+        # https://matplotlib.org/stable/users/explain/artists/patheffects_guide.html
+        text.set_path_effects([Stroke(linewidth=2, foreground='black'), Normal()])
     plt.show()
