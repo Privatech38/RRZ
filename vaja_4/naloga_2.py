@@ -63,5 +63,12 @@ if __name__ == "__main__":
     tresholded_workspace = cv2.inRange(hsv_workspace, (172 // 2, 100, 1), (263 // 2, 255, 255))
     plt.imshow(tresholded_workspace, cmap='gray')
     plt.title('maska objektov')
+
+    # Show
+    retval, labels, stats, centroids = cv2.connectedComponentsWithStats(tresholded_workspace)
+    plt.subplot(236)
+    plt.title('regije')
+    plt.imshow(labels, cmap='nipy_spectral')
+
     plt.show()
 
