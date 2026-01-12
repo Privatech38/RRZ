@@ -72,3 +72,19 @@ if __name__ == "__main__":
 
     plt.show()
 
+    plt.figure()
+    plt.imshow(warped_workspace)
+
+    inverse_H1 = np.linalg.inv(H1)
+    inverse_H2 = np.linalg.inv(H2)
+
+    robot_locations = (H2 @ np.hstack((centroids[1:], np.ones((centroids[1:].shape[0], 1)))).T).T
+    robot_locations = robot_locations[:, :2] / robot_locations[:, [-1]]
+
+    plt.scatter(centroids[1:, 0], centroids[1:, 1], c='r', marker='.')
+    for i, (x, y) in enumerate(centroids[1:]):
+        text = plt.text(x, y, f"({robot_locations[i][0]:.2f}, {robot_locations[i][1]:.2f})", fontsize=10, color='white')
+        text.set_path_effects([Stroke(linewidth=2, foreground='black'), Normal()])
+
+    plt.show()
+
