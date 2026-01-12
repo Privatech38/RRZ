@@ -1,0 +1,15 @@
+--- material/workspace_utils.py	2025-12-16 11:18:14.000000000 +0100
++++ material/workspace_utils.py	2026-01-12 15:11:37.948901500 +0100
+@@ -44,9 +44,10 @@
+ 	# ustrezen vogal vsake oznake se določi preko preslikave v spremenljivki corner_mapping
+ 
+ 	aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_APRILTAG_36h11)
+-	arucoParams = cv2.aruco.DetectorParameters()
++	aruco_params = cv2.aruco.DetectorParameters()
++	detector = cv2.aruco.ArucoDetector(aruco_dict, aruco_params)
+ 
+-	(corners, ids, rejected) = cv2.aruco.detectMarkers(im, aruco_dict, parameters=arucoParams)
++	(corners, ids, rejected) = detector.detectMarkers(im)
+ 
+ 	if corners:
+ 		for i, id in enumerate(ids.tolist()):
